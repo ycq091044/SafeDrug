@@ -1,4 +1,4 @@
-# data and code for IJCAI21 submission - SafeDrug
+# Data and Code for IJCAI'21 paper - SafeDrug
 
 ### folder specification
 - data/
@@ -67,7 +67,7 @@ run ```python SafeDrug.py```
 ```bibtex
 @inproceedings{yang2021safedrug,
     title = {SafeDrug: Dual Molecular Graph Encoders for Safe Drug Recommendations},
-    author = {Chaoqi Yang, Cao Xiao, Fenglong Ma, Lucas Glass and Jimeng Sun},
+    author = {Yang, Chaoqi and Xiao, Cao and Ma, Fenglong and Glass, Lucas and Sun, Jimeng},
     booktitle = {Proceedings of the Thirtieth International Joint Conference on
                Artificial Intelligence, {IJCAI} 2021},
     year = {2021}
