@@ -38,7 +38,11 @@
         - layer.py
 
 ### dependency
-python 3.7, scipy 1.5.2, pandas 1.1.3, torch 1.4.0, numpy 1.19.2, dill, rdkit (installation refer to https://www.rdkit.org/docs/Install.html)
+```python
+conda create -c conda-forge -n SafeDrug  rdkit # install rdkit env, you can change "SafeDrug" to [Your own env name]
+pip install scikit-learn, torch, dill, dnc
+pip install [xxx] # any required package if necessary, maybe do not specify the version, the packages should be compatible with rdkit
+```
 
 ### argument
 
@@ -59,9 +63,8 @@ python 3.7, scipy 1.5.2, pandas 1.1.3, torch 1.4.0, numpy 1.19.2, dill, rdkit (i
       --kp KP               coefficient of P signal
       --dim DIM             dimension
 
-
 ### run the code
-run ```python SafeDrug.py```
+run ```python SafeDrug.py```. If you cannot run the code on GPU, just change line 101, "cuda" to "cpu".
 
 ### cite
 ```bibtex
@@ -73,3 +76,5 @@ run ```python SafeDrug.py```
     year = {2021}
 }
 ```
+
+Welcome to contact me <chaoqiy2@illinois.edu> for any question.
