@@ -5,7 +5,7 @@
     - mapping files that collected from external sources
         - This is the data folder
         - drug-atc.csv: drug to atc code mapping file
-        - drug-DDI.csv: this a large file, could be downloaded from https://www.dropbox.com/s/8os4pd2zmp2jemd/drug-DDI.csv?dl=0
+        - drug-DDI.csv: this a large file, could be downloaded from https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
         - ndc2atc_level4.csv: NDC code to ATC-4 code mapping file
         - ndc2xnorm_mapping.txt: NDC to xnorm mapping file
         - id2drug.pkl: drug ID to drug SMILES string dict
