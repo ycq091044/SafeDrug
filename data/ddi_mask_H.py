@@ -29,7 +29,7 @@ NDCList[27] = {0}
 fraction = []
 for k, v in med_voc.idx2word.items():
     tempF = set()
-    for SMILES in NDCList[k]:
+    for SMILES in NDCList[v]:
         try:
             m = BRICS.BRICSDecompose(Chem.MolFromSmiles(SMILES))
             for frac in m:
