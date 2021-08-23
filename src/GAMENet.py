@@ -25,7 +25,7 @@ if not os.path.exists(os.path.join("saved", model_name)):
 
 # Training settings
 parser = argparse.ArgumentParser()
-parser.add_argument('--Test', action='store_true', default=True, help="test mode")
+parser.add_argument('--Test', action='store_true', default=False, help="test mode")
 parser.add_argument('--model_name', type=str, default=model_name, help="model name")
 parser.add_argument('--resume_path', type=str, default=resume_name, help='resume path')
 parser.add_argument('--ddi', action='store_true', default=True, help="using ddi")

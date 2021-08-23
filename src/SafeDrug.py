@@ -97,7 +97,7 @@ def main():
     ehr_adj_path = '../data/ehr_adj_final.pkl'
     ddi_adj_path = '../data/ddi_A_final.pkl'
     ddi_mask_path = '../data/ddi_mask_H.pkl'
-    molecule_path = '../data/idx2drug.pkl'
+    molecule_path = '../data/idx2SMILES.pkl'
     device = torch.device('cuda')
 
     ehr_adj = dill.load(open(ehr_adj_path, 'rb'))

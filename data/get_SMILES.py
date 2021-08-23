@@ -80,7 +80,7 @@ if __name__ == '__main__':
     idx2atc = voc_final['med_voc'].idx2word
 
     # get atc2ndc
-    path = './ndc2drug.pkl'
+    path = './atc2rxnorm.pkl'
     atc2ndc = dill.load(open(path, 'rb'))
 
     # fix atc2ndc mismatch

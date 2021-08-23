@@ -44,7 +44,7 @@ def ndc2atc4(med_pd):
     med_pd = med_pd.reset_index(drop=True)
     med_pd = med_pd.merge(rxnorm2atc, on=['RXCUI'])
     med_pd.drop(columns=['NDC', 'RXCUI'], inplace=True)
-    med_pd = med_pd.rename(columns={'ATC4':'NDC'})
+    med_pd = med_pd.rename(columns={'ATC5':'NDC'})
     med_pd['NDC'] = med_pd['NDC'].map(lambda x: x[:4])
     med_pd = med_pd.drop_duplicates()    
     med_pd = med_pd.reset_index(drop=True)
@@ -291,11 +291,11 @@ if __name__ == '__main__':
 
     # files can be downloaded from https://mimic.physionet.org/gettingstarted/dbsetup/
     # please change into your own MIMIC folder
-    med_file = 'xxxx/MIMIC/PRESCRIPTIONS.csv'
-    diag_file = 'xxxx/MIMIC/DIAGNOSES_ICD.csv'
-    procedure_file = 'xxxx/MIMIC/PROCEDURES_ICD.csv'
+    med_file = '/srv/local/data/physionet.org/files/mimiciii/1.4/PRESCRIPTIONS.csv'
+    diag_file = '/srv/local/data/physionet.org/files/mimiciii/1.4/DIAGNOSES_ICD.csv'
+    procedure_file = '/srv/local/data/physionet.org/files/mimiciii/1.4/PROCEDURES_ICD.csv'
 
-    med_structure_file = './idx2drug.pkl'
+    med_structure_file = './idx2SMILES.pkl'
 
     # drug code mapping files
     ndc2atc_file = './ndc2atc_level4.csv' 
@@ -304,7 +304,6 @@ if __name__ == '__main__':
 
     # ddi information
     ddi_file = './drug-DDI.csv'
-    cid_atc = './drug-atc.csv'
 
     # for med
     med_pd = med_process(med_file)

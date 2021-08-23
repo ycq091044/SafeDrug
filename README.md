@@ -2,23 +2,28 @@
 
 ### Folder Specification
 - data/
-    - mapping files that collected from external sources
-        - drug-atc.csv: drug to atc code mapping file
-        - drug-DDI.csv: this a large file, could be downloaded from https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
-        - ndc2atc_level4.csv: NDC code to ATC-4 code mapping file
-        - ndc2rxnorm_mapping.txt: NDC to xnorm mapping file
-        - idx2drug.pkl: drug ID to drug SMILES string dict (This file is created by **get_SMILES.py**, which is our crawler, used to transform atc-4 code to SMILES string. Due to the change of drug bank web structure, it may need updates)
-    - other files that generated from mapping files and MIMIC dataset (we attach these files here, user could use our provided scripts to generate)
-        - data_final.pkl: intermediate result
-        - ddi_A_final.pkl: ddi matrix
-        - ddi_matrix_H.pkl: H mask structure (This file is created by **ddi_mask_H.py**)
-        - ehr_adj_final.pkl: used in GAMENet baseline
-        - idx2ndc.pkl: idx2ndc mapping file
-        - ndc2drug.pkl: ndc2drug mapping file
-        - (important) records_final.pkl: 100 patient visit-level record samples. Under MIMIC Dataset policy, we are not allowed to distribute the datasets. Practioners could go to https://physionet.org/content/mimiciii/1.4/ and requrest the access to MIMIC-III dataset and then run our processing script to get the complete preprocessed dataset file.
-        - voc_final.pkl: diag/prod/med dictionary
-    - dataset processing scripts
-        - processing.py: is used to process the MIMIC original dataset
+    - **get_SMILES.py**: which is a crawler, given the drug ATC-4 level code (four digit, e.g., 'A01A'), our crawler returns (a set of) SMILES strings of that ATC-4 class (crawled from drugbank). This file needs atc2rxnorm.pkl (which maps ATC-4 code to rxnorm code and then query to drugbank), generated from ndc2rxnorm_mapping.txt and ndc2atc_level4.csv.
+    - **ddi_mask_H.py**: This file will output the bipartite structure of drug molecules and the fragments/substructures.
+    - **processing.py**: our data preprocessing file.
+      - Input (extracted from external resources)
+          - PRESCRIPTIONS.csv: the prescription file from MIMIC-III raw dataset
+          - DIAGNOSES_ICD.csv: the diagnosis file from MIMIC-III raw dataset
+          - PROCEDURES_ICD.csv: the procedure file from MIMIC-III raw dataset
+          - idx2SMILES.pkl: drug ID (we use ATC-4 level code to represent drug ID) to drug SMILES string dict (This file is created by **get_SMILES.py**, due to the change of drug bank web structure, it may need updates)
+          - ndc2atc_level4.csv: this is a NDC-RXCUI-ATC5 file, which gives the mapping information
+          - drug-atc.csv: this is a CID-ATC file, which gives the mapping from CID code to detailed ATC code (we should truncate later)
+          - ndc2rxnorm_mapping.txt: rxnorm to RXCUI file
+          - drug-DDI.csv: this a large file, could be downloaded from https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
+      - Output
+          - data_final.pkl: intermediate result
+          - ddi_A_final.pkl: ddi matrix
+          - ddi_matrix_H.pkl: H mask structure (This file is created by **ddi_mask_H.py**)
+          - ehr_adj_final.pkl: used in GAMENet baseline (if two drugs appear in one set, then they are connected)
+          - (important) records_final.pkl: 100 patient visit-level record samples. Under MIMIC Dataset policy, we are not allowed to distribute the datasets. Practioners could go to https://physionet.org/content/mimiciii/1.4/ and requrest the access to MIMIC-III dataset and then run our processing script to get the complete preprocessed dataset file.
+          - voc_final.pkl: diag/prod/med index to code dictionary
+    - follow this figure and figure out the data preprocessing flow
+
+    <table> <tr> <td> <a><img src="illustration.png"></a> </td></tr> </table>
 - src/
     - SafeDrug.py: our model
     - Epoch_49_TARGET_0.06_JA_0.5183_DDI_0.05854.model: the model we trained on the training set
@@ -54,9 +59,16 @@
   gzip -d DIAGNOSES_ICD.csv.gz  # diagnosis information
   ```
 
-- change the path in processing.py and processing the data to get a complete records_final.pkl
+- download the DDI file and move it to the data folder
+  download https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
+  ```python
+  mv drug-DDI.csv ./data
+  ```
+
+- processing the data to get a complete records_final.pkl
 
   ```python
+  cd ./data
   vim processing.py
   
   # line 294~296
@@ -154,4 +166,4 @@ If you cannot run the code on GPU, just change line 101, "cuda" to "cpu".
 }
 ```
 
-Welcome to contact me <chaoqiy2@illinois.edu> for any question.
+Welcome to contact me <chaoqiy2@illinois.edu> for any question. Partial credit to a previous repo (this paper is also from our group) https://github.com/sjy1203/GAMENet
