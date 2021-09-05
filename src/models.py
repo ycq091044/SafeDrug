@@ -164,8 +164,8 @@ class SafeDrugModel(nn.Module):
 
         self.MPNN_emb = MolecularGraphNeuralNetwork(N_fingerprints, emb_dim, layer_hidden=2, device=device).forward(self.MPNN_molecule_Set)
         self.MPNN_emb = torch.mm(average_projection.to(device=self.device), self.MPNN_emb.to(device=self.device))
-        # self.MPNN_emb.to(device=self.device)
-        self.MPNN_emb = torch.tensor(self.MPNN_emb, requires_grad=True)
+        self.MPNN_emb.to(device=self.device)
+        # self.MPNN_emb = torch.tensor(self.MPNN_emb, requires_grad=True)
         self.MPNN_output = nn.Linear(vocab_size[2], vocab_size[2])
         self.MPNN_layernorm = nn.LayerNorm(vocab_size[2])
         
