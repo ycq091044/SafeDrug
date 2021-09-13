@@ -5,7 +5,7 @@ import numpy as np
 # from pinky.smiles import smilin
 # from pinky.fingerprints import ecfp
 
-NDCList = dill.load(open('./idx2drug.pkl', 'rb'))
+NDCList = dill.load(open('./idx2SMILES.pkl', 'rb'))
 voc = dill.load(open('./voc_final.pkl', 'rb'))
 med_voc = voc['med_voc']
 

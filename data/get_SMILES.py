@@ -7,7 +7,7 @@ import re
 # fix mismatch between two mappings
 def fix_mismatch(idx2atc, atc2ndc, ndc2atc_original_path):
     ndc2atc = pd.read_csv(open(ndc2atc_original_path, 'rb'))
-    ndc2atc.ATC4 = ndc2atc.ATC4.apply(lambda x: x[:4])
+    ndc2atc.ATC5 = ndc2atc.ATC5.apply(lambda x: x[:4])
 
     mismatch = []
     for k, v in idx2atc.items():
@@ -17,7 +17,7 @@ def fix_mismatch(idx2atc, atc2ndc, ndc2atc_original_path):
             mismatch.append(v)
 
     for i in mismatch:
-        atc2ndc = atc2ndc.append({'NDC': i, 'NDC_orig': [s.replace('-', '') for s in ndc2atc[ndc2atc.ATC4 == i].NDC.tolist()]}, ignore_index=True)
+        atc2ndc = atc2ndc.append({'NDC': i, 'NDC_orig': [s.replace('-', '') for s in ndc2atc[ndc2atc.ATC5 == i].NDC.tolist()]}, ignore_index=True)
         
     atc2ndc = atc2ndc.append({'NDC': 'seperator', 'NDC_orig': []}, ignore_index=True)
     atc2ndc = atc2ndc.append({'NDC': 'decoder_point', 'NDC_orig': []}, ignore_index=True)
@@ -70,7 +70,7 @@ def idx2smiles(idx2atc, atc2SMILES):
             idx2drug[idx] = atc2SMILES[atc]
         except:
             pass
-    dill.dump(idx2drug, open('idx2drug.pkl', 'wb'))
+    dill.dump(idx2drug, open('idx2SMILES.pkl', 'wb'))
 
 
 if __name__ == '__main__':
