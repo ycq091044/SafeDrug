@@ -22,6 +22,7 @@ if not os.path.exists(os.path.join("saved", model_name)):
 def create_dataset(data, diag_voc, pro_voc, med_voc):
     i1_len = len(diag_voc.idx2word)
     i2_len = len(pro_voc.idx2word)
+    global output_len
     output_len = len(med_voc.idx2word)
     input_len = i1_len + i2_len
     X = []
@@ -44,6 +45,12 @@ def create_dataset(data, diag_voc, pro_voc, med_voc):
 
     return np.array(X), np.array(y)
 
+def augment(y_pred, appear_idx):
+    m, n = y_pred.shape
+    y_pred_aug = np.zeros((m, output_len))
+    y_pred_aug[:, appear_idx] = y_pred
+
+    return y_pred_aug
 
 def main():
     # grid_search = False
@@ -68,9 +75,14 @@ def main():
     test_X, test_y = create_dataset(data_test, diag_voc, pro_voc, med_voc)
     eval_X, eval_y = create_dataset(data_eval, diag_voc, pro_voc, med_voc)
 
-    # confirmed_index = np.where(train_y.sum(axis=0) == 0)[0]
-    # predicted_index = np.where(train_y.sum(axis=0) > 0)[0]
-    # train_X, train_y = train_X[predicted_index], train_y[predicted_index]
+    """
+    some drugs do not appear in the train set (their index is non_appear_idx)
+    we omit them during training ECC (resulting in appear_idx)
+    and directly not recommend these for test and eval
+    """
+    # non_appear_idx = np.where(train_y.sum(axis=0) == 0)[0]
+    appear_idx = np.where(train_y.sum(axis=0) > 0)[0]
+    train_y = train_y[:, appear_idx]
 
     base_dt = LogisticRegression()
 
@@ -87,8 +99,8 @@ def main():
     # exit()
 
     tic = time.time()
-    y_pred_chains = np.array([chain.predict(test_X) for chain in chains])
-    y_prob_chains = np.array([chain.predict_proba(test_X) for chain in chains])
+    y_pred_chains = np.array([augment(chain.predict(test_X), appear_idx) for chain in chains])
+    y_prob_chains = np.array([augment(chain.predict_proba(test_X), appear_idx) for chain in chains])
     pretime = time.time() - tic
     print ('inference time: {}'.format(pretime))
 
