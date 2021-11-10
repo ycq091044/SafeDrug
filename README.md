@@ -153,7 +153,10 @@ here is the argument:
       --kp KP               coefficient of P signal
       --dim DIM             dimension
 
-If you cannot run the code on GPU, just change line 101, "cuda" to "cpu".
+If you cannot run the code on GPU for SafeDrug.py, just change line 101, "cuda" to "cpu" and change line 126 to
+```python
+model.load_state_dict(torch.load(open(args.resume_path, 'rb'), map_location=torch.device('cpu')))
+``` 
 
 ### Citation
 ```bibtex
