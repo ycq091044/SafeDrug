@@ -29,7 +29,7 @@
     - Epoch_49_TARGET_0.06_JA_0.5183_DDI_0.05854.model: the model we trained on the training set
     - baselines:
         - GAMENet.py
-        - DMNC.py
+        - DMNC.py: there are some bg issues for the latest dnc package, please refer to the original DMNC repo https://github.com/thaihungle/DMNC
         - Leap.py
         - Retain.py
         - ECC.py
