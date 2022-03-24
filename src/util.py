@@ -352,6 +352,10 @@ def buildMPNN(molecule, med_voc, radius=1, device="cpu:0"):
                 counter += 1
             except:
                 continue
+        
+        ########
+        ########
+        
         average_index.append(counter)
 
         """Transform the above each data of numpy

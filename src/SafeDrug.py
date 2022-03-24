@@ -91,13 +91,13 @@ def eval(model, data_eval, voc_size, epoch):
 def main():
     
     # load data
-    data_path = '../data/records_final.pkl'
-    voc_path = '../data/voc_final.pkl'
+    data_path = '../data/output/records_final.pkl'
+    voc_path = '../data/output/voc_final.pkl'
 
-    ehr_adj_path = '../data/ehr_adj_final.pkl'
-    ddi_adj_path = '../data/ddi_A_final.pkl'
-    ddi_mask_path = '../data/ddi_mask_H.pkl'
-    molecule_path = '../data/idx2SMILES.pkl'
+    ehr_adj_path = '../data/output/ehr_adj_final.pkl'
+    ddi_adj_path = '../data/output/ddi_A_final.pkl'
+    ddi_mask_path = '../data/output/ddi_mask_H.pkl'
+    molecule_path = '../data/output/atc42SMILES.pkl'
     device = torch.device('cuda')
 
     ehr_adj = dill.load(open(ehr_adj_path, 'rb'))
@@ -197,7 +197,7 @@ def main():
                 result[result >= 0.5] = 1
                 result[result < 0.5] = 0
                 y_label = np.where(result == 1)[0]
-                current_ddi_rate = ddi_rate_score([[y_label]], path='../data/ddi_A_final.pkl')
+                current_ddi_rate = ddi_rate_score([[y_label]], path='../data/output/ddi_A_final.pkl')
                 
                 if current_ddi_rate <= args.target_ddi:
                     loss = 0.95 * loss_bce + 0.05 * loss_multi
