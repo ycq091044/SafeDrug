@@ -25,7 +25,7 @@
     - Epoch_49_TARGET_0.06_JA_0.5183_DDI_0.05854.model: the model we trained on the training set
     - baselines:
         - GAMENet.py
-        - DMNC.py: there are some bg issues for the latest dnc package, please refer to the original DMNC repo https://github.com/thaihungle/DMNC
+        - DMNC.py: there are some issues for the latest dnc package, please refer to the original DMNC repo https://github.com/thaihungle/DMNC
         - Leap.py
         - Retain.py
         - ECC.py
@@ -67,7 +67,7 @@
   cd ./data
   vim processing.py
   
-  # line 294~296
+  # line 323-325
   # med_file = './physionet.org/files/mimiciii/1.4/PRESCRIPTIONS.csv'
   # diag_file = './physionet.org/files/mimiciii/1.4/DIAGNOSES_ICD.csv'
   # procedure_file = './physionet.org/files/mimiciii/1.4/PROCEDURES_ICD.csv'
