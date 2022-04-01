@@ -26,13 +26,14 @@ if not os.path.exists(os.path.join("saved", model_name)):
 
 # Training settings
 parser = argparse.ArgumentParser()
-parser.add_argument('--Test', action='store_true', default=True, help="test mode")
+parser.add_argument('--Test', action='store_true', default=False, help="test mode")
 parser.add_argument('--model_name', type=str, default=model_name, help="model name")
 parser.add_argument('--resume_path', type=str, default=resume_path, help='resume path')
 parser.add_argument('--lr', type=float, default=5e-4, help='learning rate')
 parser.add_argument('--target_ddi', type=float, default=0.06, help='target ddi')
 parser.add_argument('--kp', type=float, default=0.05, help='coefficient of P signal')
 parser.add_argument('--dim', type=int, default=64, help='dimension')
+parser.add_argument('--cuda', type=int, default=1, help='which cuda')
 
 args = parser.parse_args()
 
@@ -80,7 +81,7 @@ def eval(model, data_eval, voc_size, epoch):
         llprint('\rtest step: {} / {}'.format(step, len(data_eval)))
 
     # ddi rate
-    ddi_rate = ddi_rate_score(smm_record, path='../data/ddi_A_final.pkl')
+    ddi_rate = ddi_rate_score(smm_record, path='../data/output/ddi_A_final.pkl')
 
     llprint('\nDDI Rate: {:.4}, Jaccard: {:.4},  PRAUC: {:.4}, AVG_PRC: {:.4}, AVG_RECALL: {:.4}, AVG_F1: {:.4}, AVG_MED: {:.4}\n'.format(
         ddi_rate, np.mean(ja), np.mean(prauc), np.mean(avg_p), np.mean(avg_r), np.mean(avg_f1), med_cnt / visit_cnt
@@ -94,13 +95,11 @@ def main():
     data_path = '../data/output/records_final.pkl'
     voc_path = '../data/output/voc_final.pkl'
 
-    ehr_adj_path = '../data/output/ehr_adj_final.pkl'
     ddi_adj_path = '../data/output/ddi_A_final.pkl'
     ddi_mask_path = '../data/output/ddi_mask_H.pkl'
-    molecule_path = '../data/output/atc42SMILES.pkl'
-    device = torch.device('cuda')
+    molecule_path = '../data/output/atc32SMILES.pkl'
+    device = torch.device('cuda:{}'.format(args.cuda))
 
-    ehr_adj = dill.load(open(ehr_adj_path, 'rb'))
     ddi_adj = dill.load(open(ddi_adj_path, 'rb'))
     ddi_mask_H = dill.load(open(ddi_mask_path, 'rb'))
     data = dill.load(open(data_path, 'rb'))

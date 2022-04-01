@@ -234,7 +234,7 @@ def multi_label_metric(y_gt, y_pred, y_prob):
 
     return ja, prauc, np.mean(avg_prc), np.mean(avg_recall), np.mean(avg_f1)
 
-def ddi_rate_score(record, path='../data/ddi_A_final.pkl'):
+def ddi_rate_score(record, path='../data/output/ddi_A_final.pkl'):
     # ddi rate
     ddi_A = dill.load(open(path, 'rb'))
     all_cnt = 0
@@ -327,11 +327,9 @@ def buildMPNN(molecule, med_voc, radius=1, device="cpu:0"):
     edge_dict = defaultdict(lambda: len(edge_dict))
     MPNNSet, average_index = [], []
 
-    print (len(med_voc.items()))
-    for index, ndc in med_voc.items():
+    for index, atc3 in med_voc.items():
 
-        smilesList = list(molecule[ndc])
-
+        smilesList = list(molecule[atc3])
         """Create each data with the above defined functions."""
         counter = 0 # counter how many drugs are under that ATC-3
         for smiles in smilesList:
@@ -346,15 +344,13 @@ def buildMPNN(molecule, med_voc, radius=1, device="cpu:0"):
                 # if fingerprints.shape[0] == adjacency.shape[0]:
                 for _ in range(adjacency.shape[0] - fingerprints.shape[0]):
                     fingerprints = np.append(fingerprints, 1)
+                
                 fingerprints = torch.LongTensor(fingerprints).to(device)
                 adjacency = torch.FloatTensor(adjacency).to(device)
                 MPNNSet.append((fingerprints, adjacency, molecular_size))
                 counter += 1
             except:
                 continue
-        
-        ########
-        ########
         
         average_index.append(counter)
 
@@ -363,7 +359,6 @@ def buildMPNN(molecule, med_voc, radius=1, device="cpu:0"):
         """
 
     N_fingerprint = len(fingerprint_dict)
-
     # transform into projection matrix
     n_col = sum(average_index)
     n_row = len(average_index)
