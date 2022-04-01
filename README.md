@@ -1,29 +1,25 @@
 # Data and Code for IJCAI'21 paper - SafeDrug
 
 ### Folder Specification
-- data/
-    - **get_SMILES.py**: which is a crawler, given the drug ATC-4 level code (four digit, e.g., 'A01A'), our crawler returns (a set of) SMILES strings of that ATC-4 class (crawled from drugbank). This file needs atc2rxnorm.pkl (which maps ATC-4 code to rxnorm code and then query to drugbank), generated from ndc2rxnorm_mapping.txt and ndc2atc_level4.csv.
+- data
+    - **get_SMILES.py**: which is a crawler, given the drug ATC-3 level code (four digit, e.g., 'A01A'), our crawler returns (a set of) SMILES strings of that ATC-3 class (crawled from drugbank). This file needs atc2rxnorm.pkl (which maps ATC-3 code to rxnorm code and then query to drugbank), generated from rxnorm2RXCUI.txt and RXCUI2atc4.csv. WILL UPDATE THIS SCRIPT VERY SOON, PROBABLY WILL SEEK A NEW WAY TO OBTAIN THE MOLECULE STRUCTURE.
     - **ddi_mask_H.py**: This file will output the bipartite structure of drug molecules and the fragments/substructures.
     - **processing.py**: our data preprocessing file.
-      - Input (extracted from external resources)
-          - PRESCRIPTIONS.csv: the prescription file from MIMIC-III raw dataset
-          - DIAGNOSES_ICD.csv: the diagnosis file from MIMIC-III raw dataset
-          - PROCEDURES_ICD.csv: the procedure file from MIMIC-III raw dataset
-          - idx2SMILES.pkl: drug ID (we use ATC-4 level code to represent drug ID) to drug SMILES string dict (This file is created by **get_SMILES.py**, due to the change of drug bank web structure, it may need updates)
-          - ndc2atc_level4.csv: this is a NDC-RXCUI-ATC5 file, which gives the mapping information
-          - drug-atc.csv: this is a CID-ATC file, which gives the mapping from CID code to detailed ATC code (we should truncate later)
-          - ndc2rxnorm_mapping.txt: rxnorm to RXCUI file
-          - drug-DDI.csv: this a large file, could be downloaded from https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
-      - Output
-          - data_final.pkl: intermediate result
-          - ddi_A_final.pkl: ddi matrix
-          - ddi_matrix_H.pkl: H mask structure (This file is created by **ddi_mask_H.py**)
-          - ehr_adj_final.pkl: used in GAMENet baseline (if two drugs appear in one set, then they are connected)
-          - (important) records_final.pkl: 100 patient visit-level record samples. Under MIMIC Dataset policy, we are not allowed to distribute the datasets. Practioners could go to https://physionet.org/content/mimiciii/1.4/ and requrest the access to MIMIC-III dataset and then run our processing script to get the complete preprocessed dataset file.
-          - voc_final.pkl: diag/prod/med index to code dictionary
-    - follow this figure and figure out the data preprocessing flow
-
-    <table> <tr> <td> <a><img src="illustration.png"></a> </td></tr> </table>
+    - Input (extracted from external resources)
+        - PRESCRIPTIONS.csv: the prescription file from MIMIC-III raw dataset
+        - DIAGNOSES_ICD.csv: the diagnosis file from MIMIC-III raw dataset
+        - PROCEDURES_ICD.csv: the procedure file from MIMIC-III raw dataset
+        - RXCUI2atc4.csv: this is a NDC-RXCUI-ATC4 mapping file, and we only need the RXCUI to ATC4 mapping. This file is obtained from https://github.com/sjy1203/GAMENet, where the name is called ndc2atc_level4.csv.
+        - drug-atc.csv: this is a CID-ATC file, which gives the mapping from CID code to detailed ATC code (we will use the prefix of the ATC code latter for aggregation). This file is obtained from https://github.com/sjy1203/GAMENet.
+        - rxnorm2RXCUI.txt: rxnorm to RXCUI mapping file. This file is obtained from https://github.com/sjy1203/GAMENet, where the name is called ndc2rxnorm_mapping.csv.
+        - drug-DDI.csv: this a large file, containing the drug DDI information, coded by CID. The file could be downloaded from https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
+    - Output
+        - atc32SMILES.pkl: drug ID (we use ATC-3 level code to represent drug ID) to drug SMILES string dict (This file is created by **get_SMILES.py**, due to the change of drug bank web structure, it may need updates)
+        - ddi_A_final.pkl: ddi adjacency matrix
+        - ddi_matrix_H.pkl: H mask structure (This file is created by **ddi_mask_H.py**)
+        - ehr_adj_final.pkl: used in GAMENet baseline (if two drugs appear in one set, then they are connected)
+        - records_final.pkl: The final diagnosis-procedure-medication EHR records of each patient, used for train/val/test split.
+        - voc_final.pkl: diag/prod/med index to code dictionary
 - src/
     - SafeDrug.py: our model
     - Epoch_49_TARGET_0.06_JA_0.5183_DDI_0.05854.model: the model we trained on the training set
