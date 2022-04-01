@@ -325,7 +325,7 @@ if __name__ == '__main__':
     procedure_file = '/srv/local/data/physionet.org/files/mimiciii/1.4/PROCEDURES_ICD.csv'
 
     # input auxiliary files
-    med_structure_file = './output/atc42SMILES.pkl'
+    med_structure_file = './output/atc32SMILES.pkl'
     RXCUI2atc4_file = './input/RXCUI2atc4.csv' 
     cid2atc6_file = './input/drug-atc.csv'
     rxnorm2RXCUI_file = './input/rxnorm2RXCUI.txt'

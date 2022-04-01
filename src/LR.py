@@ -46,8 +46,8 @@ def create_dataset(data, diag_voc, pro_voc, med_voc):
 
 def main():
     # grid_search = False
-    data_path = '../data/records_final.pkl'
-    voc_path = '../data/voc_final.pkl'
+    data_path = '../data/output/records_final.pkl'
+    voc_path = '../data/output/voc_final.pkl'
 
     data = dill.load(open(data_path, 'rb'))
     voc = dill.load(open(voc_path, 'rb'))
@@ -90,7 +90,7 @@ def main():
             ja, prauc, avg_p, avg_r, avg_f1 = multi_label_metric(y_sample, y_pred, y_prob)
 
             # ddi rate
-            ddi_A = dill.load(open('../data/ddi_A_final.pkl', 'rb'))
+            ddi_A = dill.load(open('../data/output/ddi_A_final.pkl', 'rb'))
             all_cnt = 0
             dd_cnt = 0
             med_cnt = 0

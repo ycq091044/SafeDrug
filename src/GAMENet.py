@@ -34,6 +34,7 @@ parser.add_argument('--target_ddi', type=float, default=0.06, help="target ddi")
 parser.add_argument('--T', type=float, default=2.0, help='T')
 parser.add_argument('--decay_weight', type=float, default=0.85, help="decay weight")
 parser.add_argument('--dim', type=int, default=64, help='dimension')
+parser.add_argument('--cuda', type=int, default=1, help='which cuda')
 
 args = parser.parse_args()
 
@@ -83,7 +84,7 @@ def eval(model, data_eval, voc_size, epoch):
         llprint('\rtest step: {} / {}'.format(step, len(data_eval)))
 
     # ddi rate
-    ddi_rate = ddi_rate_score(smm_record, path='../data/ddi_A_final.pkl')
+    ddi_rate = ddi_rate_score(smm_record, path='../data/output/ddi_A_final.pkl')
 
     llprint('\nDDI Rate: {:.4}, Jaccard: {:.4},  PRAUC: {:.4}, AVG_PRC: {:.4}, AVG_RECALL: {:.4}, AVG_F1: {:.4}, AVG_MED: {:.4}\n'.format(
         ddi_rate, np.mean(ja), np.mean(prauc), np.mean(avg_p), np.mean(avg_r), np.mean(avg_f1), med_cnt / visit_cnt
@@ -94,12 +95,12 @@ def eval(model, data_eval, voc_size, epoch):
 
 def main():
 
-    data_path = '../data/records_final.pkl'
-    voc_path = '../data/voc_final.pkl'
+    data_path = '../data/output/records_final.pkl'
+    voc_path = '../data/output/voc_final.pkl'
 
-    ehr_adj_path = '../data/ehr_adj_final.pkl'
-    ddi_adj_path = '../data/ddi_A_final.pkl'
-    device = torch.device('cuda')
+    ehr_adj_path = '../data/output/ehr_adj_final.pkl'
+    ddi_adj_path = '../data/output/ddi_A_final.pkl'
+    device = torch.device('cuda:{}'.format(args.cuda))
 
     ehr_adj = dill.load(open(ehr_adj_path, 'rb'))
     ddi_adj = dill.load(open(ddi_adj_path, 'rb'))
@@ -174,7 +175,7 @@ def main():
                     target_output1[target_output1 >= 0.5] = 1
                     target_output1[target_output1 < 0.5] = 0
                     y_label = np.where(target_output1 == 1)[0]
-                    current_ddi_rate = ddi_rate_score([[y_label]], path='../data/ddi_A_final.pkl')
+                    current_ddi_rate = ddi_rate_score([[y_label]], path='../data/output/ddi_A_final.pkl')
                     if current_ddi_rate <= args.target_ddi:
                         loss = 0.9 * loss_bce + 0.1 * loss_multi
                         prediction_loss_cnt += 1

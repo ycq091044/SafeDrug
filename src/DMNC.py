@@ -96,9 +96,9 @@ def main():
     if not os.path.exists(os.path.join("saved", model_name)):
         os.makedirs(os.path.join("saved", model_name))
 
-    data_path = '../data/records_final.pkl'
-    voc_path = '../data/voc_final.pkl'
-    device = torch.device('cuda:0')
+    data_path = '../data/output/records_final.pkl'
+    voc_path = '../data/output/voc_final.pkl'
+    device = torch.device('cuda:{}'.format(1))
 
     data = dill.load(open(data_path, 'rb'))
     voc = dill.load(open(voc_path, 'rb'))
