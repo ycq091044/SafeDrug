@@ -40,61 +40,22 @@
 > Now, we are using **drugbank_drugs_info.csv** to obtain the SMILES string for each ATC3 code (previously we use get_SMILES.py), thus, the data statistics change a bit. The current statistics are shown below:
 
 ```
+#patients  6350
 #clinical events  15032
 #diagnosis  1958
-#med  105
+#med  112
 #procedure 1430
 #avg of diagnoses  10.5089143161256
-#avg of medicines  11.304749866950505
+#avg of medicines  11.647751463544438
 #avg of procedures  3.8436668440659925
 #avg of vists  2.367244094488189
 #max of diagnoses  128
-#max of medicines  62
+#max of medicines  64
 #max of procedures  50
 #max of visit  29
 ```
 
-### Step 1: Data Processing
-
-- Go to https://physionet.org/content/mimiciii/1.4/ to download the MIMIC-III dataset (You may need to get the certificate)
-
-  ```python
-  cd ./data
-  wget -r -N -c -np --user [account] --ask-password https://physionet.org/files/mimiciii/1.4/
-  ```
-
-- go into the folder and unzip three main files
-
-  ```python
-  cd ./physionet.org/files/mimiciii/1.4
-  gzip -d PROCEDURES_ICD.csv.gz # procedure information
-  gzip -d PRESCRIPTIONS.csv.gz  # prescription information
-  gzip -d DIAGNOSES_ICD.csv.gz  # diagnosis information
-  ```
-
-- download the DDI file and move it to the data folder
-  download https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
-  ```python
-  mv drug-DDI.csv ./data
-  ```
-
-- processing the data to get a complete records_final.pkl
-
-  ```python
-  cd ./data
-  vim processing.py
-  
-  # line 323-325
-  # med_file = './physionet.org/files/mimiciii/1.4/PRESCRIPTIONS.csv'
-  # diag_file = './physionet.org/files/mimiciii/1.4/DIAGNOSES_ICD.csv'
-  # procedure_file = './physionet.org/files/mimiciii/1.4/PROCEDURES_ICD.csv'
-  
-  python processing.py
-  ```
-
-
-
-### Step 2: Package Dependency
+### Step 1: Package Dependency
 
 - first, install the rdkit conda environment
 ```python
@@ -133,6 +94,44 @@ numpy: 1.21.1
 
 Let us know any of the package dependency issue. Please pay special attention to pandas, some report that a high version of pandas would raise error for dill loading.
 
+
+### Step 2: Data Processing
+
+- Go to https://physionet.org/content/mimiciii/1.4/ to download the MIMIC-III dataset (You may need to get the certificate)
+
+  ```python
+  cd ./data
+  wget -r -N -c -np --user [account] --ask-password https://physionet.org/files/mimiciii/1.4/
+  ```
+
+- go into the folder and unzip three main files
+
+  ```python
+  cd ./physionet.org/files/mimiciii/1.4
+  gzip -d PROCEDURES_ICD.csv.gz # procedure information
+  gzip -d PRESCRIPTIONS.csv.gz  # prescription information
+  gzip -d DIAGNOSES_ICD.csv.gz  # diagnosis information
+  ```
+
+- download the DDI file and move it to the data folder
+  download https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
+  ```python
+  mv drug-DDI.csv ./data
+  ```
+
+- processing the data to get a complete records_final.pkl
+
+  ```python
+  cd ./data
+  vim processing.py
+  
+  # line 323-325
+  # med_file = './physionet.org/files/mimiciii/1.4/PRESCRIPTIONS.csv'
+  # diag_file = './physionet.org/files/mimiciii/1.4/DIAGNOSES_ICD.csv'
+  # procedure_file = './physionet.org/files/mimiciii/1.4/PROCEDURES_ICD.csv'
+  
+  python processing.py
+  ```
 
 
 ### Step 3: run the code

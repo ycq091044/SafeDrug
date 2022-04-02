@@ -379,8 +379,6 @@ if __name__ == '__main__':
     med_pd = med_pd.merge(med_pd_lg2[['SUBJECT_ID']], on='SUBJECT_ID', how='inner').reset_index(drop=True) 
 
     med_pd = codeMapping2atc4(med_pd)
-    ATC3List = dill.load(open(med_structure_file, 'rb'))
-    med_pd = med_pd[med_pd.ATC3.isin(list(ATC3List.keys()))]
     med_pd = filter_300_most_med(med_pd)
 
     # med to SMILES mapping
@@ -420,6 +418,5 @@ if __name__ == '__main__':
     print ("obtain ddi adj matrix")
 
     # get ddi_mask_H
-    atc42SMILES = dill.load(open(med_structure_file, 'rb'))
-    ddi_mask_H = get_ddi_mask(atc42SMILES, med_voc)
+    ddi_mask_H = get_ddi_mask(atc3toSMILES, med_voc)
     dill.dump(ddi_mask_H, open(ddi_mask_H_file, 'wb'))
