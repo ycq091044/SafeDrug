@@ -97,7 +97,7 @@ def main():
 
     ddi_adj_path = '../data/output/ddi_A_final.pkl'
     ddi_mask_path = '../data/output/ddi_mask_H.pkl'
-    molecule_path = '../data/output/atc32SMILES.pkl'
+    molecule_path = '../data/output/atc3toSMILES.pkl'
     device = torch.device('cuda:{}'.format(args.cuda))
 
     ddi_adj = dill.load(open(ddi_adj_path, 'rb'))

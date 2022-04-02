@@ -366,7 +366,8 @@ def buildMPNN(molecule, med_voc, radius=1, device="cpu:0"):
     average_projection = np.zeros((n_row, n_col))
     col_counter = 0
     for i, item in enumerate(average_index):
-        average_projection[i, col_counter : col_counter + item] = 1 / item
+        if item > 0:
+            average_projection[i, col_counter : col_counter + item] = 1 / item
         col_counter += item
 
     return MPNNSet, N_fingerprint, torch.FloatTensor(average_projection)
