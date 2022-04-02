@@ -11,10 +11,14 @@ from rdkit.Chem import BRICS
 def med_process(med_file):
     med_pd = pd.read_csv(med_file, dtype={'NDC':'category'})
 
-    med_pd.drop(columns=['ROW_ID','DRUG_TYPE','DRUG_NAME_POE','DRUG_NAME_GENERIC',
+    # med_pd.drop(columns=['ROW_ID','DRUG_TYPE','DRUG_NAME_POE','DRUG_NAME_GENERIC',
+    #                     'FORMULARY_DRUG_CD','PROD_STRENGTH','DOSE_VAL_RX',
+    #                     'DOSE_UNIT_RX','FORM_VAL_DISP','FORM_UNIT_DISP', 'GSN', 'FORM_UNIT_DISP',
+    #                     'ROUTE','ENDDATE','DRUG'], axis=1, inplace=True)
+    med_pd.drop(columns=['ROW_ID','DRUG_TYPE', 'DRUG_NAME_POE', 'DRUG_NAME_GENERIC',
                         'FORMULARY_DRUG_CD','PROD_STRENGTH','DOSE_VAL_RX',
                         'DOSE_UNIT_RX','FORM_VAL_DISP','FORM_UNIT_DISP', 'GSN', 'FORM_UNIT_DISP',
-                        'ROUTE','ENDDATE','DRUG'], axis=1, inplace=True)
+                        'ROUTE','ENDDATE'], axis=1, inplace=True)
     med_pd.drop(index = med_pd[med_pd['NDC'] == '0'].index, axis=0, inplace=True)
     med_pd.fillna(method='pad', inplace=True)
     med_pd.dropna(inplace=True)
@@ -29,6 +33,35 @@ def med_process(med_file):
     med_pd = med_pd.reset_index(drop=True)
 
     return med_pd
+
+# ATC3-to-drugname
+def ATC3toDrug(med_pd):
+    atc3toDrugDict = {}
+    for atc3, drugname in med_pd[['ATC3', 'DRUG']].values:
+        if atc3 in atc3toDrugDict:
+            atc3toDrugDict[atc3].add(drugname)
+        else:
+            atc3toDrugDict[atc3] = set(drugname)
+
+    return atc3toDrugDict
+
+def atc3toSMILES(ATC3toDrugDict, druginfo):
+    drug2smiles = {}
+    atc3tosmiles = {}
+    for drugname, smiles in druginfo[['name', 'moldb_smiles']].values:
+        if type(smiles) == type('a'):
+            drug2smiles[drugname] = smiles
+    for atc3, drug in ATC3toDrugDict.items():
+        temp = []
+        for d in drug:
+            try:
+                temp.append(drug2smiles[d])
+            except:
+                pass
+        if len(temp) > 0:
+            atc3tosmiles[atc3] = temp[:3]
+    
+    return atc3tosmiles
 
 # medication mapping
 def codeMapping2atc4(med_pd):
@@ -330,6 +363,7 @@ if __name__ == '__main__':
     cid2atc6_file = './input/drug-atc.csv'
     rxnorm2RXCUI_file = './input/rxnorm2RXCUI.txt'
     ddi_file = './input/drug-DDI.csv'
+    drugbankinfo = './input/drugbank_drugs_info.csv'
 
     # output files
     ddi_adjacency_file = "./output/ddi_A_final.pkl"
@@ -337,6 +371,7 @@ if __name__ == '__main__':
     ehr_sequence_file = "./output/records_final.pkl"
     vocabulary_file = "./output/voc_final.pkl"
     ddi_mask_H_file = "./output/ddi_mask_H.pkl"
+    atc3toSMILES_file = './output/atc3toSMILES.pkl'
     
     # for med
     med_pd = med_process(med_file)
@@ -348,6 +383,12 @@ if __name__ == '__main__':
     med_pd = med_pd[med_pd.ATC3.isin(list(ATC3List.keys()))]
     med_pd = filter_300_most_med(med_pd)
 
+    # med to SMILES mapping
+    atc3toDrug = ATC3toDrug(med_pd)
+    druginfo = pd.read_csv(drugbankinfo)
+    atc3toSMILES = atc3toSMILES(atc3toDrug, druginfo)
+    dill.dump(atc3toSMILES, open(atc3toSMILES_file,'wb'))
+    med_pd = med_pd[med_pd.ATC3.isin(atc3toSMILES.keys())]
     print ('complete medication processing')
 
     # for diagnosis
