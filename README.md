@@ -52,8 +52,6 @@
 #max of procedures  50
 #max of visit  29
 ```
-
-
 ### Step 1: Package Dependency
 
 - first, install the rdkit conda environment
