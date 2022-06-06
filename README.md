@@ -61,6 +61,7 @@
 - Use the **drugbank_drugs_info.csv** file for ```drug->SMILES``` mapping (now we have ```atc3->SMILES```)
   - in https://github.com/ycq091044/SafeDrug/blob/main/data/processing.py#48
 - ```atc3``` is a coarse-granular drug classification, one ```atc3``` code contains multiple SMILES strings.
+> ALSO, check out this tool for easy medication code mapping https://github.com/ycq091044/MedCode.
 
 ### Step 1: Package Dependency
 
