@@ -52,7 +52,15 @@
 #max of procedures  50
 #max of visit  29
 ```
-
+### High-level Clarifications on How to Map ATC Code to SMILES
+- The original **PRESCRIPTIONS.csv** file provides ```rxnorm->drugname``` mapping (the ```rxnorm``` value is indicated in ```NDC``` column)
+- Use the **rxnorm2RXCUI.txt** file for ```rxnorm->RXCUI``` mapping (now we have ```RXCUI->drugname```)
+  - in https://github.com/ycq091044/SafeDrug/blob/main/data/processing.py#70
+- Use the **RXCUI2atc4.csv** file for ```RXCUI->atc4``` mapping, then change ```atc4``` to ```atc3``` (now we have ```atc3->drugname```)
+  - in https://github.com/ycq091044/SafeDrug/blob/main/data/processing.py#80
+- Use the **drugbank_drugs_info.csv** file for ```drug->SMILES``` mapping (now we have ```atc3->SMILES```)
+  - in https://github.com/ycq091044/SafeDrug/blob/main/data/processing.py#48
+- ```atc3``` is a coarse-granular drug classification, one ```atc3``` code contains multiple SMILES strings.
 
 ### Step 1: Package Dependency
 
