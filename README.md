@@ -33,9 +33,7 @@
         - **util.py**
         - **layer.py**
 
-> Note that **./data/get_SMILES.py [NOT DIRECTLY USED NOW]** is the previous crawler, given the drug ATC-3 level code (four digit, e.g., 'A01A'), our crawler returns (a set of) SMILES strings of that ATC-3 class (crawled from drugbank). This file needs atc2rxnorm.pkl (which maps ATC-3 code to rxnorm code and then query to drugbank), generated from rxnorm2RXCUI.txt and RXCUI2atc4.csv. However, due to the structure change of drugbank, it is not used in the current pipeline.
-
-> Now, we are using **drugbank_drugs_info.csv** to obtain the SMILES string for each ATC3 code (previously we use get_SMILES.py), thus, the data statistics change a bit. The current statistics are shown below:
+> Note that we previously use **./data/get_SMILES.py** for getting SMILES strings from drugbank. However, due to the web structure change of drugbank, this crawler is not used in the current pipeline. Now, we are using **drugbank_drugs_info.csv** to obtain the SMILES string for each ATC3 code, thus, the data statistics differ a bit from the paper. The current statistics are shown below:
 
 ```
 #patients  6350
