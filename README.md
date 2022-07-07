@@ -67,6 +67,9 @@
 ```python
 conda create -c conda-forge -n SafeDrug  rdkit
 conda activate SafeDrug
+
+# can also use the following in your current env
+pip install rdkit-pypi
 ```
 
 - then, in SafeDrug environment, install the following package
