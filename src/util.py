@@ -1,4 +1,10 @@
-from sklearn.metrics import jaccard_score, roc_auc_score, precision_score, f1_score, average_precision_score
+from sklearn.metrics import (
+    jaccard_score,
+    roc_auc_score,
+    precision_score,
+    f1_score,
+    average_precision_score,
+)
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -9,26 +15,35 @@ from collections import Counter
 from rdkit import Chem
 from collections import defaultdict
 import torch
-warnings.filterwarnings('ignore')
+
+warnings.filterwarnings("ignore")
+
 
 def get_n_params(model):
-    pp=0
+    pp = 0
     for p in list(model.parameters()):
-        nn=1
+        nn = 1
         for s in list(p.size()):
-            nn = nn*s
+            nn = nn * s
         pp += nn
     return pp
+
 
 # use the same metric from DMNC
 def llprint(message):
     sys.stdout.write(message)
     sys.stdout.flush()
 
+
 def transform_split(X, Y):
-    x_train, x_eval, y_train, y_eval = train_test_split(X, Y, train_size=2/3, random_state=1203)
-    x_eval, x_test, y_eval, y_test = train_test_split(x_eval, y_eval, test_size=0.5, random_state=1203)
+    x_train, x_eval, y_train, y_eval = train_test_split(
+        X, Y, train_size=2 / 3, random_state=1203
+    )
+    x_eval, x_test, y_eval, y_test = train_test_split(
+        x_eval, y_eval, test_size=0.5, random_state=1203
+    )
     return x_train, x_eval, x_test, y_train, y_eval, y_test
+
 
 def sequence_output_process(output_logits, filter_token):
     pind = np.argsort(output_logits, axis=-1)[:, ::-1]
@@ -49,7 +64,9 @@ def sequence_output_process(output_logits, filter_token):
     y_pred_prob_tmp = []
     for idx, item in enumerate(out_list):
         y_pred_prob_tmp.append(output_logits[idx, item])
-    sorted_predict = [x for _, x in sorted(zip(y_pred_prob_tmp, out_list), reverse=True)]
+    sorted_predict = [
+        x for _, x in sorted(zip(y_pred_prob_tmp, out_list), reverse=True)
+    ]
     return out_list, sorted_predict
 
 
@@ -57,13 +74,12 @@ def sequence_metric(y_gt, y_pred, y_prob, y_label):
     def average_prc(y_gt, y_label):
         score = []
         for b in range(y_gt.shape[0]):
-            target = np.where(y_gt[b]==1)[0]
+            target = np.where(y_gt[b] == 1)[0]
             out_list = y_label[b]
             inter = set(out_list) & set(target)
             prc_score = 0 if len(out_list) == 0 else len(inter) / len(out_list)
             score.append(prc_score)
         return score
-
 
     def average_recall(y_gt, y_label):
         score = []
@@ -75,16 +91,19 @@ def sequence_metric(y_gt, y_pred, y_prob, y_label):
             score.append(recall_score)
         return score
 
-
     def average_f1(average_prc, average_recall):
         score = []
         for idx in range(len(average_prc)):
             if (average_prc[idx] + average_recall[idx]) == 0:
                 score.append(0)
             else:
-                score.append(2*average_prc[idx]*average_recall[idx] / (average_prc[idx] + average_recall[idx]))
+                score.append(
+                    2
+                    * average_prc[idx]
+                    * average_recall[idx]
+                    / (average_prc[idx] + average_recall[idx])
+                )
         return score
-
 
     def jaccard(y_gt, y_label):
         score = []
@@ -100,19 +119,21 @@ def sequence_metric(y_gt, y_pred, y_prob, y_label):
     def f1(y_gt, y_pred):
         all_micro = []
         for b in range(y_gt.shape[0]):
-            all_micro.append(f1_score(y_gt[b], y_pred[b], average='macro'))
+            all_micro.append(f1_score(y_gt[b], y_pred[b], average="macro"))
         return np.mean(all_micro)
 
     def roc_auc(y_gt, y_pred_prob):
         all_micro = []
         for b in range(len(y_gt)):
-            all_micro.append(roc_auc_score(y_gt[b], y_pred_prob[b], average='macro'))
+            all_micro.append(roc_auc_score(y_gt[b], y_pred_prob[b], average="macro"))
         return np.mean(all_micro)
 
     def precision_auc(y_gt, y_prob):
         all_micro = []
         for b in range(len(y_gt)):
-            all_micro.append(average_precision_score(y_gt[b], y_prob[b], average='macro'))
+            all_micro.append(
+                average_precision_score(y_gt[b], y_prob[b], average="macro")
+            )
         return np.mean(all_micro)
 
     def precision_at_k(y_gt, y_prob_label, k):
@@ -124,6 +145,7 @@ def sequence_metric(y_gt, y_pred, y_prob, y_label):
                     TP += 1
             precision += TP / k
         return precision / len(y_gt)
+
     try:
         auc = roc_auc(y_gt, y_prob)
     except ValueError:
@@ -142,7 +164,6 @@ def sequence_metric(y_gt, y_pred, y_prob, y_label):
 
 
 def multi_label_metric(y_gt, y_pred, y_prob):
-
     def jaccard(y_gt, y_pred):
         score = []
         for b in range(y_gt.shape[0]):
@@ -180,25 +201,32 @@ def multi_label_metric(y_gt, y_pred, y_prob):
             if average_prc[idx] + average_recall[idx] == 0:
                 score.append(0)
             else:
-                score.append(2*average_prc[idx]*average_recall[idx] / (average_prc[idx] + average_recall[idx]))
+                score.append(
+                    2
+                    * average_prc[idx]
+                    * average_recall[idx]
+                    / (average_prc[idx] + average_recall[idx])
+                )
         return score
 
     def f1(y_gt, y_pred):
         all_micro = []
         for b in range(y_gt.shape[0]):
-            all_micro.append(f1_score(y_gt[b], y_pred[b], average='macro'))
+            all_micro.append(f1_score(y_gt[b], y_pred[b], average="macro"))
         return np.mean(all_micro)
 
     def roc_auc(y_gt, y_prob):
         all_micro = []
         for b in range(len(y_gt)):
-            all_micro.append(roc_auc_score(y_gt[b], y_prob[b], average='macro'))
+            all_micro.append(roc_auc_score(y_gt[b], y_prob[b], average="macro"))
         return np.mean(all_micro)
 
     def precision_auc(y_gt, y_prob):
         all_micro = []
         for b in range(len(y_gt)):
-            all_micro.append(average_precision_score(y_gt[b], y_prob[b], average='macro'))
+            all_micro.append(
+                average_precision_score(y_gt[b], y_prob[b], average="macro")
+            )
         return np.mean(all_micro)
 
     def precision_at_k(y_gt, y_prob, k=3):
@@ -234,9 +262,10 @@ def multi_label_metric(y_gt, y_pred, y_prob):
 
     return ja, prauc, np.mean(avg_prc), np.mean(avg_recall), np.mean(avg_f1)
 
-def ddi_rate_score(record, path='../data/output/ddi_A_final.pkl'):
+
+def ddi_rate_score(record, path="../data/output/ddi_A_final.pkl"):
     # ddi rate
-    ddi_A = dill.load(open(path, 'rb'))
+    ddi_A = dill.load(open(path, "rb"))
     all_cnt = 0
     dd_cnt = 0
     for patient in record:
@@ -262,9 +291,10 @@ def create_atoms(mol, atom_dict):
     atoms = [a.GetSymbol() for a in mol.GetAtoms()]
     for a in mol.GetAromaticAtoms():
         i = a.GetIdx()
-        atoms[i] = (atoms[i], 'aromatic')
+        atoms[i] = (atoms[i], "aromatic")
     atoms = [atom_dict[a] for a in atoms]
     return np.array(atoms)
+
 
 def create_ijbonddict(mol, bond_dict):
     """Create a dictionary, in which each key is a node ID
@@ -279,8 +309,8 @@ def create_ijbonddict(mol, bond_dict):
         i_jbond_dict[j].append((i, bond))
     return i_jbond_dict
 
-def extract_fingerprints(radius, atoms, i_jbond_dict,
-                         fingerprint_dict, edge_dict):
+
+def extract_fingerprints(radius, atoms, i_jbond_dict, fingerprint_dict, edge_dict):
     """Extract the fingerprints from a molecular graph
     based on Weisfeiler-Lehman algorithm.
     """
@@ -331,27 +361,28 @@ def buildMPNN(molecule, med_voc, radius=1, device="cpu:0"):
 
         smilesList = list(molecule[atc3])
         """Create each data with the above defined functions."""
-        counter = 0 # counter how many drugs are under that ATC-3
+        counter = 0  # counter how many drugs are under that ATC-3
         for smiles in smilesList:
             try:
                 mol = Chem.AddHs(Chem.MolFromSmiles(smiles))
                 atoms = create_atoms(mol, atom_dict)
                 molecular_size = len(atoms)
                 i_jbond_dict = create_ijbonddict(mol, bond_dict)
-                fingerprints = extract_fingerprints(radius, atoms, i_jbond_dict,
-                                                    fingerprint_dict, edge_dict)
+                fingerprints = extract_fingerprints(
+                    radius, atoms, i_jbond_dict, fingerprint_dict, edge_dict
+                )
                 adjacency = Chem.GetAdjacencyMatrix(mol)
                 # if fingerprints.shape[0] == adjacency.shape[0]:
                 for _ in range(adjacency.shape[0] - fingerprints.shape[0]):
                     fingerprints = np.append(fingerprints, 1)
-                
+
                 fingerprints = torch.LongTensor(fingerprints).to(device)
                 adjacency = torch.FloatTensor(adjacency).to(device)
                 MPNNSet.append((fingerprints, adjacency, molecular_size))
                 counter += 1
             except:
                 continue
-        
+
         average_index.append(counter)
 
         """Transform the above each data of numpy
