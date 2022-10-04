@@ -9,7 +9,7 @@
         - **PROCEDURES_ICD.csv**: the procedure file from MIMIC-III raw dataset
         - **RXCUI2atc4.csv**: this is a NDC-RXCUI-ATC4 mapping file, and we only need the RXCUI to ATC4 mapping. This file is obtained from https://github.com/sjy1203/GAMENet, where the name is called ndc2atc_level4.csv.
         - **drug-atc.csv**: this is a CID-ATC file, which gives the mapping from CID code to detailed ATC code (we will use the prefix of the ATC code latter for aggregation). This file is obtained from https://github.com/sjy1203/GAMENet.
-        - **rxnorm2RXCUI.txt**: rxnorm to RXCUI mapping file. This file is obtained from https://github.com/sjy1203/GAMENet, where the name is called ndc2rxnorm_mapping.csv.
+        - **ndc2RXCUI.txt**: NDC to RXCUI mapping file. This file is obtained from https://github.com/sjy1203/GAMENet, where the name is called ndc2rxnorm_mapping.csv.
         - **drugbank_drugs_info.csv**: drug information table downloaded from drugbank here https://www.dropbox.com/s/angoirabxurjljh/drugbank_drugs_info.csv?dl=0, which is used to map drug name to drug SMILES string.
         - **drug-DDI.csv**: this a large file, containing the drug DDI information, coded by CID. The file could be downloaded from https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
     - ```Output/```
@@ -51,8 +51,8 @@
 #max of visit  29
 ```
 ### High-level Clarifications on How to Map ATC Code to SMILES
-- The original **PRESCRIPTIONS.csv** file provides ```rxnorm->drugname``` mapping (the ```rxnorm``` value is indicated in ```NDC``` column)
-- Use the **rxnorm2RXCUI.txt** file for ```rxnorm->RXCUI``` mapping (now we have ```RXCUI->drugname```)
+- The original **PRESCRIPTIONS.csv** file provides ```ndc->drugname``` mapping
+- Use the **ndc2RXCUI.txt** file for ```ndc->RXCUI``` mapping (now we have ```RXCUI->drugname```)
   - in https://github.com/ycq091044/SafeDrug/blob/main/data/processing.py#70
 - Use the **RXCUI2atc4.csv** file for ```RXCUI->atc4``` mapping, then change ```atc4``` to ```atc3``` (now we have ```atc3->drugname```)
   - in https://github.com/ycq091044/SafeDrug/blob/main/data/processing.py#80

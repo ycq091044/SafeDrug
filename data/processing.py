@@ -65,19 +65,19 @@ def atc3toSMILES(ATC3toDrugDict, druginfo):
 
 # medication mapping
 def codeMapping2atc4(med_pd):
-    with open(rxnorm2RXCUI_file, 'r') as f:
-        rxnorm2RXCUI = eval(f.read())
-    med_pd['RXCUI'] = med_pd['NDC'].map(rxnorm2RXCUI)
+    with open(ndc2RXCUI_file, 'r') as f:
+        ndc2RXCUI = eval(f.read())
+    med_pd['RXCUI'] = med_pd['NDC'].map(ndc2RXCUI)
     med_pd.dropna(inplace=True)
 
-    rxnorm2atc4 = pd.read_csv(RXCUI2atc4_file)
-    rxnorm2atc4 = rxnorm2atc4.drop(columns=['YEAR','MONTH','NDC'])
-    rxnorm2atc4.drop_duplicates(subset=['RXCUI'], inplace=True)
+    RXCUI2atc4 = pd.read_csv(RXCUI2atc4_file)
+    RXCUI2atc4 = RXCUI2atc4.drop(columns=['YEAR','MONTH','NDC'])
+    RXCUI2atc4.drop_duplicates(subset=['RXCUI'], inplace=True)
     med_pd.drop(index = med_pd[med_pd['RXCUI'].isin([''])].index, axis=0, inplace=True)
     
     med_pd['RXCUI'] = med_pd['RXCUI'].astype('int64')
     med_pd = med_pd.reset_index(drop=True)
-    med_pd = med_pd.merge(rxnorm2atc4, on=['RXCUI'])
+    med_pd = med_pd.merge(RXCUI2atc4, on=['RXCUI'])
     med_pd.drop(columns=['NDC', 'RXCUI'], inplace=True)
     med_pd['ATC4'] = med_pd['ATC4'].map(lambda x: x[:4])
     med_pd = med_pd.rename(columns={'ATC4':'ATC3'})
@@ -361,7 +361,7 @@ if __name__ == '__main__':
     med_structure_file = './output/atc32SMILES.pkl'
     RXCUI2atc4_file = './input/RXCUI2atc4.csv' 
     cid2atc6_file = './input/drug-atc.csv'
-    rxnorm2RXCUI_file = './input/rxnorm2RXCUI.txt'
+    ndc2RXCUI_file = './input/ndc2RXCUI.txt'
     ddi_file = './input/drug-DDI.csv'
     drugbankinfo = './input/drugbank_drugs_info.csv'
 
