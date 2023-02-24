@@ -17,7 +17,7 @@
         - **ddi_A_final.pkl**: ddi adjacency matrix
         - **ddi_matrix_H.pkl**: H mask structure (This file is created by **ddi_mask_H.py**)
         - **ehr_adj_final.pkl****: used in GAMENet baseline (if two drugs appear in one set, then they are connected)
-        - **records_final.pkl**: The final diagnosis-procedure-medication EHR records of each patient, used for train/val/test split.
+        - **records_final.pkl**: The final diagnosis-procedure-medication EHR records of each patient, used for train/val/test split (**NOTE: we only provide the first 100 entries as examples here. We cannot distribute the whole MIMIC-III data https://physionet.org/content/mimiciii/1.4/, then please download the dataset by yourself and use our processing code to obtain the full records.**).
         - **voc_final.pkl**: diag/prod/med index to code dictionary
 - ```src/```
     - **SafeDrug.py**: our model
