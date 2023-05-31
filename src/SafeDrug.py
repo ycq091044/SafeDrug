@@ -128,20 +128,9 @@ def main():
         tic = time.time()
 
         ddi_list, ja_list, prauc_list, f1_list, med_list = [], [], [], [], []
-        # ###
-        # for threshold in np.linspace(0.00, 0.20, 30):
-        #     print ('threshold = {}'.format(threshold))
-        #     ddi, ja, prauc, _, _, f1, avg_med = eval(model, data_test, voc_size, 0, threshold)
-        #     ddi_list.append(ddi)
-        #     ja_list.append(ja)
-        #     prauc_list.append(prauc)
-        #     f1_list.append(f1)
-        #     med_list.append(avg_med)
-        # total = [ddi_list, ja_list, prauc_list, f1_list, med_list]
-        # with open('ablation_ddi.pkl', 'wb') as infile:
-        #     dill.dump(total, infile)
-        # ###
         result = []
+        print ()
+        print (" ----- 10 rounds of bootstrapping test ----- ")
         for _ in range(10):
             test_sample = np.random.choice(data_test, round(len(data_test) * 0.8), replace=True)
             ddi_rate, ja, prauc, avg_p, avg_r, avg_f1, avg_med = eval(model, test_sample, voc_size, 0)
@@ -155,6 +144,8 @@ def main():
         for m, s in zip(mean, std):
             outstring += "{:.4f} $\pm$ {:.4f} & ".format(m, s)
 
+        print ()
+        print (" ----- final (mean $\pm$ std) ----- ")
         print (outstring)
 
         print ('test time: {}'.format(time.time() - tic))

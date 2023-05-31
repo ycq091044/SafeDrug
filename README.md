@@ -1,6 +1,24 @@
 # data and code for IJCAI21 submission - SafeDrug
 
-### folder specification
+### Reproduce the IJCAI paper results
+- Step 1: download the DDI file and move it to the data folder
+    - https://drive.google.com/file/d/1mnPc0O0ztz0fkv3HF-dpmBb8PLWsEoDz/view?usp=sharing
+- Step 2: processing the data to get a complete records_final.pkl
+    ```python
+    # modify line 294-296 to your own path
+    med_file = './physionet.org/files/mimiciii/1.4/PRESCRIPTIONS.csv'
+    diag_file = './physionet.org/files/mimiciii/1.4/DIAGNOSES_ICD.csv'
+    procedure_file = './physionet.org/files/mimiciii/1.4/PROCEDURES_ICD.csv'
+    ```
+    ```
+    python processing.py
+    ```
+- Step 3: run model
+    ```
+    python SafeDrug.py
+    ```
+
+### Folder specification
 - data/
     - mapping files that collected from external sources
         - This is the data folder
@@ -37,33 +55,11 @@
         - util.py
         - layer.py
 
-### dependency
+### Dependency
 python 3.7, scipy 1.5.2, pandas 1.1.3, torch 1.4.0, numpy 1.19.2, dill, rdkit (installation refer to https://www.rdkit.org/docs/Install.html)
 
-### argument
 
-    usage: SafeDrug.py [-h] [--Test] [--model_name MODEL_NAME]
-                   [--resume_path RESUME_PATH] [--lr LR]
-                   [--target_ddi TARGET_DDI] [--kp KP] [--dim DIM]
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      --Test                test mode
-      --model_name MODEL_NAME
-                            model name
-      --resume_path RESUME_PATH
-                            resume path
-      --lr LR               learning rate
-      --target_ddi TARGET_DDI
-                            target ddi
-      --kp KP               coefficient of P signal
-      --dim DIM             dimension
-
-
-### run the code
-run ```python SafeDrug.py```
-
-### cite
+### Cite
 ```bibtex
 @inproceedings{yang2021safedrug,
     title = {SafeDrug: Dual Molecular Graph Encoders for Safe Drug Recommendations},
