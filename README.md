@@ -1,5 +1,30 @@
 # Data and Code for IJCAI'21 paper - SafeDrug
 
+### YOU NEED TO KNOW FIRST!
+- The results using the `archived` branch (results of the paper)：
+    ```
+    DDI: 0.0589 (0.0005) Ja: 0.5213 (0.0030) F1: 0.6768 (0.0027) PRAUC: 0.7647 (0.0025)
+    ```
+    - Check here https://github.com/ycq091044/SafeDrug/tree/archived for reproducing the paper results.
+
+- The results using this `master` branch (@J-Zhangg obtained this in issue #23, thanks): 
+    ```
+    # When the learning rate is set to 5e-4:
+    DDI: 0.0632 (0.0003) Ja: 0.5114 (0.0026) F1: 0.6676 (0.0023) PRAUC: 0.7649 (0.0028)
+
+    # When the learning rate is set to 2e-4:
+    DDI: 0.0607 (0.0005) Ja: 0.5089 (0.0022) F1: 0.6659 (0.0019) PRAUC: 0.7632 (0.0022)
+    ```
+
+**[Implementation difference]** Here are two main differences:
+
+ 1. As we mentioned below, the main difference of two branches is in how we get the drug SMILES string (the paper crawl methods misses a lot of molecules, while the current branch uses drugbank method, which gives more comprehensive sets). 
+ 2. The data processing scripts are also a bit difference, and thus output data statistics differ from the ones reported in the paper.
+
+**[which branch to use?]** General guidance:
+ 1. This `master` branch contains more descriptions (to learn how to use our codes), and the folder structures are very similar to `archived` branch.
+ 2. Use the `archived` branch to reproduce the results in the paper.
+
 ### Folder Specification
 - ```data/```
     - **procesing.py** our data preprocessing file.
@@ -50,6 +75,7 @@
 #max of procedures  50
 #max of visit  29
 ```
+
 ### High-level Clarifications on How to Map ATC Code to SMILES
 - The original **PRESCRIPTIONS.csv** file provides ```ndc->drugname``` mapping
 - Use the **ndc2RXCUI.txt** file for ```ndc->RXCUI``` mapping (now we have ```RXCUI->drugname```)
@@ -60,6 +86,7 @@
   - in https://github.com/ycq091044/SafeDrug/blob/main/data/processing.py#48
 - ```atc3``` is a coarse-granular drug classification, one ```atc3``` code contains multiple SMILES strings.
 > ALSO, check out this tool for easy medication code mapping https://github.com/ycq091044/MedCode.
+
 
 ### Step 1: Package Dependency
 
